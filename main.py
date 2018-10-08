@@ -9,6 +9,7 @@ from processor import Processor
 
 channel_name="human"
 TOKEN="NDk4MTU0ODg1NjI0MjMzOTk0.Dppmww._OVo7aW1IQv_KAn5IscnPg_wqOg"
+SPREADSHEET_ID="1f720WIVi8aRfeUW78FkUexdjyuQbrNBK_0qhRpbxHbk"
 client=discord.Client()
 p=Processor()
 
@@ -16,7 +17,7 @@ p=Processor()
 #Writes a message to specified google sheets
 def write(message):
     #Log in info
-    SPREADSHEET_ID="1f720WIVi8aRfeUW78FkUexdjyuQbrNBK_0qhRpbxHbk"
+    global SPREADSHEET_ID
     SCOPES='https://www.googleapis.com/auth/spreadsheets'
 
     #Log into Google
