@@ -1,6 +1,7 @@
 import discord
 import re
 from googleapiclient.discovery import build
+import datetime
 from httplib2 import Http
 from oauth2client import file, client, tools
 SPREADSHEET_ID="1f720WIVi8aRfeUW78FkUexdjyuQbrNBK_0qhRpbxHbk"
@@ -99,3 +100,57 @@ def write(message):
     ]
     body={'values':values}
     result=service.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID,range=RANGE_NAME,valueInputOption="USER_ENTERED", body=body).execute()
+
+def get_scores():
+    #Log in info
+    global SPREADSHEET_ID
+    SCOPES='https://www.googleapis.com/auth/spreadsheets'
+
+    #Log into Google
+    store=file.Storage('token.json')
+    creds=store.get()
+    if not creds or creds.invalid:
+        flow=client.flow_from_clientsecrets('credentials.json',SCOPES)
+        creds=tools.run_flow(flow,store)
+    service=build('sheets','v4',http=creds.authorize(Http()))
+
+    
+    RANGE_2 ="CurrentPR/RP!B3:B13"
+    result=service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,range=RANGE_2).execute()
+    result=result.get('values',[])
+    scores=[]
+    for value in result:
+        scores.append(value[0])
+    return scores
+"""
+History:
+    10/5/18: Created and Implemented - Jarod Klypchak
+Description:
+    Writes a message to specified google sheets
+Arguments:
+    message: an array of length 4 where
+        message[0]=country code
+        message[1]=PR change
+        message[2]=Author of Change
+        message[3]=Time
+Return:
+    None.
+"""
+
+def print_change_history(changes):
+    print("Changes during this exectution:")
+    for message in changes:
+        print(message)
+    print("----------------------------------")
+
+def manual_change(changes):
+    text=input("Please Enter Your PR Message: ")
+    a=process_message(text)
+    
+    if(len(a)==2):
+        changes.append((a[0]+" gets "+a[1]+" PR from BOT OPERATOR"))
+        a.append("BOT OPERATOR")
+        time=str(datetime.datetime.now())
+        time=time[11:16]
+        a.append(time)
+        write(a)

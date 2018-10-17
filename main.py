@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from __future__ import print_function
 import discord
+import asyncio
 import threading
 from helper import *
 import time
@@ -9,9 +10,11 @@ import time
 Useful Globals
 """
 
-channel_name="coding-do-not-disturb"
-TOKEN="NDk3OTM2OTE5MDQxNDA5MDI4.Dp5Vdg.yiUYqoxAWXsTfg3pcu3_-3HlNa8"
+channel_name="general"
+TOKEN="NDk3OTM2OTE5MDQxNDA5MDI4.DqE4bw.nmTQJThgPD4b0LzKx5bHosZ3YJQ"
 client=discord.Client()
+changes=[]
+countries=["BR","CH","EG","FR","GE","IN","JA","RU","SA","UK","US"]
 
 """
 History:
@@ -36,7 +39,7 @@ async def on_message(message):
         if(len(a)!=2):
             a.append(process_time(message.id))
             write(a)
-            print((a[0]+" gets "+a[1]+" PR from "+str(message.author.nick)))#[:-5]))
+            changes.append((a[0]+" gets "+a[1]+" PR from "+str(message.author.nick)))
             msg=(a[0]+" gets "+a[1]+" PR from "+str(message.author.nick)).format(message)
             await client.send_message(message.channel, msg)
 
@@ -66,6 +69,31 @@ async def on_ready():
         if str(channel)==channel_name:
             await client.send_message(channel,msg)
 
-#client.run(TOKEN)
+discord_thread=threading.Thread(target=discord_thread)
+discord_thread.daemon=True
+discord_thread.start()
+time.sleep(5)
+running=True
+while(running):
+    print("Options")
+    print("[1]: Enter PR Change")
+    print("[2]: Print Current PR Values")
+    print("[3]: View Recent Changes")
+    print("[4]: Exit")
+    text=input("Please Enter Your Choice: ")
+    choice=int(text)
+    if(choice==1):
+        manual_change(changes)
+    elif(choice==2):
+        scores=get_scores()
+        for i in range(0,11):
+            print(countries[i]+": "+scores[i])
+    elif(choice==3):
+        print_change_history(changes)
+    elif(choice==4):
+        running=False       
+    else:
+        print("Please Enter a Valid Option")
 
-threading.Thread(target=discord_thread).start()
+client.logout()
+
