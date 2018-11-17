@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 import datetime
 from httplib2 import Http
 from oauth2client import file, client, tools
-SPREADSHEET_ID="1f720WIVi8aRfeUW78FkUexdjyuQbrNBK_0qhRpbxHbk"
+SPREADSHEET_ID=#Insert Spreadsheet ID
 
 #A collection of helper methods for WTS_PR_BOT
 

@@ -11,7 +11,7 @@ Useful Globals
 """
 
 channel_name="general"
-TOKEN="NDk3OTM2OTE5MDQxNDA5MDI4.DqE4bw.nmTQJThgPD4b0LzKx5bHosZ3YJQ"
+TOKEN=#Insert Discord Token
 client=discord.Client()
 changes=[]
 countries=["BR","CH","EG","FR","GE","IN","JA","RU","SA","UK","US"]
