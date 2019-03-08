@@ -4,39 +4,46 @@ from googleapiclient.discovery import build
 import datetime
 from httplib2 import Http
 from oauth2client import file, client, tools
-SPREADSHEET_ID=#Insert Spreadsheet ID
-
+SPREADSHEET_ID=#INSERT HERE
+countries=["BRI","CAI","CAU","DRA","JAB","NID","NOB","SAL","SOL"]
 #A collection of helper methods for WTS_PR_BOT
 
 
 """
 History:
     10/5/18: Created and Implemented - Jarod Klypchak
+    3/08/19: Updated to Proper 2019 country values
 Description:
     Processes a discord message, seeing if it represents a change in PR
 Arguments:
     message: a string that represents a message from discord
 Return:
-    If message is of form [country code] [pr change], result[0]=country code and result[1]= PR change
-    Otherwise, result=None.
+    If message is of form [country code] [pr change]
+    result[0]= Array of all countries to be affected.
+    result[1]= Number to change by.
 """
 #Processes a message in the designated channel, looking for a two letter country key, and a number.
 def process_message(message):
-        a=[]
-        match=re.search(r'(BR|CH|EG|FR|GE|IN|JA|RU|SA|UK|US|ALL|Br|Ch|Fr|Ge|In|Ja|Ru|Eg|Sa|Uk|Us|All|br|ch|fr|eg|ge|in|ja|ru|sa|uk|us|all)',message)
-        if(match != None):
-            a.append(match.group())
+        message=message.upper()
+        result=[]
+        countries=[]
+        matches=re.findall(r'(BRI|CAI|CAU|DRA|JAB|NID|NOB|SAL|SOL|ALL)',message)
+        for match in matches:
+            countries.append(str(match))
+        if len(countries)>0:
+            result.append(countries)
         match=re.search(r'\+?-?\d+',message)
         if(match != None):
-            a.append(match.group())
-        if(len(a) < 2):
-            a=None
-        return a
+            result.append(match.group())
+        if(len(result) < 2):
+            result=None
+        return result
 
 
 """
 History:
     10/5/18: Created and Implemented - Jarod Klypchak
+    1/31/19: Fixed to actually have the right time (maybe)
 Description:
     Converts a discord_snowflake to an EST time in military time.
 Arguments:
@@ -50,7 +57,7 @@ def process_time(msg):
         hours=time[:2]
         minutes=time[2:]
         hours=int(hours)
-        hours-=4
+        hours-=5
         if hours<=0:
             hours+=12
         hours=str(hours)    
@@ -59,6 +66,7 @@ def process_time(msg):
 """
 History:
     10/5/18: Created and Implemented - Jarod Klypchak
+    1/31/19: Made changes for PR and such. -Jarod Klypchak
 Description:
     Writes a message to specified google sheets
 Arguments:
@@ -85,14 +93,14 @@ def write(message):
     service=build('sheets','v4',http=creds.authorize(Http()))
     
     #Find first empty row
-    RANGE_2 ="PRLog!C3:C"
+    RANGE_2 ="PowerLog!C3:C"
     result=service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,range=RANGE_2).execute()
     current_row=0
     result=result.get('values',[])
     current_row+=3+len(result)
 
     #Write Values to Spot
-    RANGE_NAME ="PRLog!B"+str(current_row)+":E"+str(current_row)
+    RANGE_NAME ="PowerLog!B"+str(current_row)+":E"+str(current_row)
     values=[
         [
             message[3],message[0], message[1],message[2]
@@ -101,6 +109,17 @@ def write(message):
     body={'values':values}
     result=service.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID,range=RANGE_NAME,valueInputOption="USER_ENTERED", body=body).execute()
 
+"""
+History:
+    10/5/18: Created and Implemented - Jarod Klypchak
+    1/31/19: Made changes for PR and such. -Jarod Klypchak
+Description:
+    Gets the current PR scores as an array.
+Arguments:
+    None.
+Return:
+    An array containing all of the scores in order.
+"""
 def get_scores():
     #Log in info
     global SPREADSHEET_ID
@@ -115,7 +134,7 @@ def get_scores():
     service=build('sheets','v4',http=creds.authorize(Http()))
 
     
-    RANGE_2 ="CurrentPR/RP!B3:B13"
+    RANGE_2 ="CurrentPower!B3:B11"
     result=service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,range=RANGE_2).execute()
     result=result.get('values',[])
     scores=[]

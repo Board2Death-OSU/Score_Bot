@@ -10,13 +10,13 @@ import time
 Useful Globals
 """
 
-channel_name="general"
-TOKEN=#Insert Discord Token
+channel_name="INSERT HERE"
+TOKEN="INSERT HERE"
 client=discord.Client()
 changes=[]
-countries=["BR","CH","EG","FR","GE","IN","JA","RU","SA","UK","US"]
-
+countries=["BRI","CAI","CAU","DRA","JAB","NID","NOB","SAL","SOL"]
 """
+
 History:
     10/5/18: Created and Implemented - Jarod Klypchak
 Description:
@@ -35,13 +35,20 @@ async def on_message(message):
     #Make sure it's the right channel
     elif str(message.channel)==channel_name:
         a=process_message(message.content)
-        a.append(str(message.author.nick))
-        if(len(a)!=2):
-            a.append(process_time(message.id))
-            write(a)
-            changes.append((a[0]+" gets "+a[1]+" PR from "+str(message.author.nick)))
-            msg=(a[0]+" gets "+a[1]+" PR from "+str(message.author.nick)).format(message)
-            await client.send_message(message.channel, msg)
+        
+        
+        if(a!= None and len(a)>1):
+            a.append(str(message.author.nick))
+            for i in range(len(a[0])):
+                current=[]
+                current.append(a[0][i])
+                current.append(a[1])
+                current.append(message.author.nick)
+                current.append(process_time(message.id))
+                write(current)
+                changes.append((current[0]+" gets "+current[1]+" PR from "+str(message.author.nick)))
+                msg=(current[0]+" gets "+current[1]+" PR "+str(message.author.nick)).format(message)
+                await client.send_message(message.channel, msg)
 
 def discord_thread():
     client.run(TOKEN);
@@ -63,7 +70,7 @@ async def on_ready():
     print(client.user.id)
     print("------------")
 
-    msg="Jarod's Human_Control_Bot reporting for duty!"
+    msg="Jarod's WTS_Bot reporting for duty!"
     channels=client.get_all_channels()
     for channel in channels:
         if str(channel)==channel_name:
@@ -86,7 +93,7 @@ while(running):
         manual_change(changes)
     elif(choice==2):
         scores=get_scores()
-        for i in range(0,11):
+        for i in range(len(countries)):
             print(countries[i]+": "+scores[i])
     elif(choice==3):
         print_change_history(changes)
