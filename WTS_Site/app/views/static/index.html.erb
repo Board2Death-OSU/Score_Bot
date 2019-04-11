@@ -1,0 +1,41 @@
+<div class="grid-x grid-margin-x">
+        <div class="cell large-6">
+        <a class="twitter-timeline" href="https://twitter.com/TheHerald_WTS?ref_src=twsrc%5Etfw">Tweets by TheHerald_WTS</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+        <div class="cell large-6">
+            <h2>Top 2 Countries </h2>
+            <table>
+                <tr>
+                    <th>Country</th>
+                    <th>PR</th>
+                </tr>
+                <%for i in 0..1%>
+                
+                <tr>
+                    <td><%=@data[i][0]%></td>
+                    <td><%=@data[i][1]%></td>
+                </tr>
+                <%end%>
+            </table>
+  
+            <h2>Bottom 2 Countries </h2>
+            <table>
+                <tr>
+                    <th>Country</th>
+                    <th>PR</th>
+                </tr>
+                <%for i in 0..1%>
+                <tr>
+                    <td><%=@data[@data.length-1-(1-i)][0]%></td>
+                    <td><%=@data[@data.length-1-(1-i)][1]%></td>
+                </tr>
+                <%end%>
+            </table>
+
+            <h2>Terror Thresholds Passed</h2>
+            <h4><%=@terror%></h4>
+            <img src=<%=image_url("logo.png")%>
+        </div>
+        
+ </div>           
+
