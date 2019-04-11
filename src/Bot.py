@@ -16,16 +16,9 @@ TOKEN="NTY1MjU2ODA2NTcwMzkzNjEx.XKzzBg.tJGs-9uBNzS335GJbNp_PW5ELzE"
 countries=data["countries"]
 counts=data["counts"]
 responses=data["responses"]
-
-
+dan_facts=data["dan_facts"]
 
 do_useless_stuff=True
-f=open("../data/dan_facts.txt","r")
-dan_facts=f.read()
-dan_facts=dan_facts.split("\n")
-f.close()
-
-
 
 """
 History:
